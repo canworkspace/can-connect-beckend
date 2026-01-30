@@ -1,24 +1,28 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const app = express();
-const port = process.env.PORT || 3000;
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ana Sayfa Mesajı
+// Veritabanı Bağlantısı (Render panelinden okur)
+const MONGODB_URI = process.env.MONGODB_URI; 
+
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log("Can Connect Veritabanı Bağlantısı Başarılı ✅"))
+  .catch((err) => console.error("Veritabanı Hatası:", err));
+
+// Örnek Bir Test API'si
 app.get('/', (req, res) => {
-  res.send('Can Connect Sunucusu Yayında! 🚀 (System Online)');
+  res.send('Can Connect Sunucusu ve Veritabanı Hazır! 🚀');
 });
 
-// Test Bağlantısı
-app.get('/api/status', (req, res) => {
-  res.json({
-    durum: "aktif",
-    mesaj: "Can Connect servisi sorunsuz çalışıyor."
-  });
+// Kayıt Olma API'si
+app.post('/api/kayit-ol', async (req, res) => {
+    // Buraya kayıt kodlarını ekleyeceğiz, önce bağlantıyı test edelim
+    res.json({ mesaj: "Sunucu isteği aldı!" });
 });
 
-app.listen(port, () => {
-  console.log(`Sunucu ${port} portunda başlatıldı.`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Sunucu ${PORT} portunda çalışıyor.`));
